@@ -43,6 +43,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .brand span{color:var(--turf)}
 .bar .btns{display:flex;gap:8px}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 12px;font-weight:500}
+a.btn{display:inline-block;text-decoration:none;color:inherit}
 .btn:hover{border-color:var(--ink)}
 .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:700}
 .btn.primary:disabled{opacity:.4;cursor:not-allowed}
@@ -355,7 +356,7 @@ function lobbyHTML(){
    '<p class="muted small">オンライン対戦は、Claudeにサインインして開いたときだけ使えます。</p>'):'<p class="muted small">接続を確認しています…</p>';
  const can=ON.ready&&ON.db&&ON.uid;
  return`
- <div class="bar"><div class="brand">PLAY<span>CALL</span></div><div class="btns"><button class="btn" data-act="rules">ルールと相性表</button></div></div>
+ <div class="bar"><div class="brand">PLAY<span>CALL</span></div><div class="btns"><a class="btn" href="manual.html" target="_blank" rel="noopener">マニュアル</a><button class="btn" data-act="rules">ルールと相性表</button></div></div>
  <section class="hero"><div class="sit">3RD &amp; 2 — RUN? OR PLAY ACTION?</div><h1>READ THE<br>DEFENSE.</h1>
   <p>攻撃と守備が1枚ずつ同時にカードを出す、読み合いのアメフト。強いカードはありません。相手が何を出すかを読んだ方が勝ちます。</p></section>
  <div class="row"><label for="drives" class="small" style="font-weight:700">試合の長さ</label>
@@ -465,7 +466,7 @@ function logHTML(G){if(!G.log.length)return'';let li='';
 
 function gameHTML(){
  const top='<div class="bar"><div class="brand">PLAY<span>CALL</span></div><div class="btns">'+(app.mode==='online'?'<span class="tag">部屋 '+esc(ON.code||'')+'</span>':'')+
-  '<button class="btn" data-act="rules">ルールと相性表</button><button class="btn" data-act="lobby">ロビーへ</button></div></div>';
+  '<a class="btn" href="manual.html" target="_blank" rel="noopener">マニュアル</a><button class="btn" data-act="rules">ルールと相性表</button><button class="btn" data-act="lobby">ロビーへ</button></div></div>';
  if(app.mode==='online'){const g=ON.game;
   if(!g)return top+'<section class="panel"><div class="wait">部屋を読み込んでいます…</div></section>';
   if(!g.guest)return top+'<section class="panel final"><div class="muted">このコードを相手に伝えてください</div><div class="code">'+esc(ON.code)+'</div><div class="wait">相手の参加を待っています…</div>'+
