@@ -65,6 +65,26 @@ input[type=text],select{font:inherit;color:var(--ink);background:var(--raise);bo
 .howto ol{margin:8px 0 0;padding-left:1.3em}
 .code{font-family:var(--display);font-weight:800;font-size:54px;letter-spacing:.2em;line-height:1}
 
+.setup{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:16px}
+.sg{display:grid;gap:8px}
+.sl{font-family:var(--display);font-weight:800;font-size:24px;letter-spacing:.04em;line-height:1}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.segb{border:2px solid var(--line);background:var(--raise);border-radius:8px;padding:12px 14px;text-align:left;min-width:0}
+.segb b{display:block;font-size:19px;font-weight:700;line-height:1.25}
+.segb span{font-size:12.5px;color:var(--muted)}
+.segb:hover{border-color:var(--ink)}
+.segb[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.segb[aria-pressed=true] span{color:inherit;opacity:.8}
+.fourth{border:3px solid var(--flag);border-radius:10px;padding:12px 14px;background:var(--raise);display:grid;gap:10px}
+.fourth .ft{font-family:var(--display);font-weight:800;font-size:28px;letter-spacing:.04em;line-height:1}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.choice{border:2px solid var(--line);background:var(--surface);border-radius:8px;padding:12px 14px;text-align:left;min-width:0}
+.choice b{display:block;font-family:var(--display);font-weight:800;font-size:26px;line-height:1.05}
+.choice span{font-size:13px}
+.choice:hover{border-color:var(--ink)}
+.choice[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.choice:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:560px){.seg,.choices{grid-template-columns:1fr}.segb,.choice{display:flex;align-items:baseline;justify-content:space-between;gap:10px}.segb b,.choice b{flex:0 0 auto}.segb span,.choice span{text-align:right}}
 /* scoreboard */
 .board{background:var(--board);color:var(--board-fg);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
 .team{display:flex;align-items:baseline;gap:10px;min-width:0}
@@ -241,7 +261,8 @@ function resolveCore(o,d,mod,star,st){
   return{g,y:0,kind:'inc'}}
  if(g===0&&FUMRUN.has(o)&&star)return{g,y,kind:'fum'};
  return{g,y:(o!=='Sneak'&&y>=1)?y+mod:y,kind:'gain'}}
-function fgRate(dist){return dist<=20?1:dist<=30?.75:dist<=40?.5:0}
+function fgPct(dist){return dist<=20?100:dist<=25?90:dist<=30?80:dist<=36?70:dist<=40?40:0}
+function fgRate(dist){return fgPct(dist)/100}
 function newGame(drives,first){first=first?1:0;return{n:0,score:[0,0],drive:0,total:drives*2,ot:0,first,off:first,yl:25,down:1,togo:10,streak:null,usedO:[],usedD:[],
  chain:[0,1,2,3,4,5,6,7,8,9,10,11],over:false,log:[],last:null}}
 function avail(deck,used){const m={};deck.forEach(c=>m[c.id]=c.c);used.forEach(id=>m[id]--);return m}
@@ -251,8 +272,7 @@ function applyPlay(G0,call,dId,r){
  const draw=()=>{if(!G.chain.length)G.chain=[0,1,2,3,4,5,6,7,8,9,10,11];const i=r%G.chain.length;const c=G.chain.splice(i,1)[0];res.chain=c;return CHAIN[c]};
  let next=null;
  if(call==='PUNT'){res.kind='punt';res.end='punt';res.d=null;const pos=G.yl+40;next=pos>=100?20:100-pos}
- else if(call==='FG'){res.d=null;const dist=100-G.yl;let ok;
-  if(dist<=20)ok=true;else if(dist>40)ok=false;else{const[mod,star]=draw();ok=dist<=30?!star:mod>=1}
+ else if(call==='FG'){res.d=null;const dist=100-G.yl;res.fgd=dist;const ok=(r%100)<fgPct(dist);
   if(ok){res.kind='fg';res.end='fg';res.pts=3;next=25}else{res.kind='fgmiss';res.end='fgmiss';next=100-G.yl}}
  else{
   const[mod,star]=draw();const c=resolveCore(call,dId,mod,star,G.streak);
@@ -301,7 +321,8 @@ function aiChoose(G,ai,rnd){
  let lastOffDrive=false,deficit=0;
  if(aiOff){lastOffDrive=G.drive>=G.total-2;deficit=G.score[1-ai]-G.score[ai]}
  const A=rows.map(o=>cols.map(d=>{
-   let s=0;for(let i=0;i<chainN;i++)s+=val(applyPlay(S,o,d,i));s/=chainN;
+   let s=0;if(o==='FG'){const p=fgRate(100-G.yl);s=p*val(applyPlay(S,o,d,0))+(1-p)*val(applyPlay(S,o,d,99))}
+   else{for(let i=0;i<chainN;i++)s+=val(applyPlay(S,o,d,i));s/=chainN}
    if(aiOff&&lastOffDrive){if(o==='PUNT'&&deficit>0)s=-9;if(o==='FG'&&deficit>3)s=-9}
    return s}));
  const[p,q]=solveMix(A);
@@ -315,6 +336,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const LS={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
 const STANDALONE=true;
+const CFG=Object.assign({drives:'4',first:'o'},LS.get('pc_cfg')||{});
 const app={screen:'lobby',mode:null,me:0,G:null,sel:null,flash:0,online:{ready:false,db:null,user:null,uid:null,canWrite:null,code:null,game:null,moves:{h:null,g:null},unsubs:[],busy:{},pick:null,err:null}};
 const ON=app.online;
 const cardO=id=>OFF[OI[id]],cardD=id=>DEF[DI[id]];
@@ -349,7 +371,7 @@ function chainTxt(c){if(c==null)return'';const[m,s]=CHAIN[c];return(m>0?'+':'')+
 function render(){const a=$('#app');a.innerHTML=app.screen==='lobby'?lobbyHTML():gameHTML()}
 
 function lobbyHTML(){
- const code=($('#roomcode')||{}).value||'';const dv=($('#drives')||{}).value||'4';const fv=($('#first')||{}).value||'o';
+ const code=($('#roomcode')||{}).value||'';
  const saved=LS.get('pc_cpu');
  const onl=ON.ready?(ON.db&&ON.uid?(ON.canWrite===false?
    '<p class="muted small">この共有設定では観戦のみできます。対戦するには、作成者から「投稿者」以上の権限で共有してもらってください。</p>':''):
@@ -359,10 +381,8 @@ function lobbyHTML(){
  <div class="bar"><div class="brand">PLAY<span>CALL</span></div><div class="btns"><a class="btn" href="manual.html" target="_blank" rel="noopener">マニュアル</a><button class="btn" data-act="rules">ルールと相性表</button></div></div>
  <section class="hero"><div class="sit">3RD &amp; 2 — RUN? OR PLAY ACTION?</div><h1>READ THE<br>DEFENSE.</h1>
   <p>攻撃と守備が1枚ずつ同時にカードを出す、読み合いのアメフト。強いカードはありません。相手が何を出すかを読んだ方が勝ちます。</p></section>
- <div class="row"><label for="drives" class="small" style="font-weight:700">試合の長さ</label>
-  <select id="drives"><option value="3"${dv==='3'?' selected':''}>各3ドライブ（約25分）</option><option value="4"${dv==='4'?' selected':''}>各4ドライブ（約35分）</option><option value="2"${dv==='2'?' selected':''}>各2ドライブ（お試し）</option></select>
-  <label for="first" class="small" style="font-weight:700">最初のドライブ</label>
-  <select id="first"><option value="o"${fv==='o'?' selected':''}>オフェンスから</option><option value="d"${fv==='d'?' selected':''}>ディフェンスから</option><option value="r"${fv==='r'?' selected':''}>コイントスで決める</option></select></div>
+ <section class="setup"><div class="sg"><div class="sl">試合の長さ</div><div class="seg">${segs('drives',[['2','各2ドライブ','お試し 約15分'],['3','各3ドライブ','約25分'],['4','各4ドライブ','約35分']])}</div></div>
+  <div class="sg"><div class="sl">最初のドライブ</div><div class="seg">${segs('first',[['o','オフェンスから','あなたが先に攻撃'],['d','ディフェンスから','CPUが先に攻撃'],['r','コイントス','ランダムに決める']])}</div></div></section>
  <div class="modes">
   <section class="mode"><h2>CPUと対戦</h2><p class="muted" style="margin:0">ひとりですぐ遊べます。CPUは局面ごとに混合戦略でカードを選び、あなたの選択は見ません。</p>
    <div class="row"><button class="btn primary big" data-act="cpu">試合開始</button>${saved&&saved.G&&!saved.G.over?'<button class="btn big" data-act="cpu-resume">続きから</button>':''}</div></section>
@@ -378,6 +398,7 @@ function lobbyHTML(){
   <li>RUNを2回続けるとPlay Actionが強くなり、PASSを2回続けるとDrawが強くなります。</li>
   <li>4回の攻撃で10yd進めば攻撃続行。Touchdown 7点、Field Goal 3点。</li></ol></section>`}
 
+function segs(k,opts){return opts.map(o=>'<button class="segb" data-act="cfg" data-k="'+k+'" data-v="'+o[0]+'" aria-pressed="'+(CFG[k]===o[0])+'"><b>'+o[1]+'</b><span>'+o[2]+'</span></button>').join('')}
 function fieldHTML(G){
  const v=app.me<0?0:app.me,mine=G.off===v;
  const abs=mine?G.yl:100-G.yl,fd=mine?Math.min(100,G.yl+G.togo):Math.max(0,100-G.yl-G.togo);
@@ -436,13 +457,18 @@ function handHTML(G){
  deck.forEach(c=>{if(av[c.id]<=0)return;
   cards+='<button class="card '+(amOff?'o':'d')+'" data-act="sel" data-id="'+c.id+'" aria-pressed="'+(app.sel===c.id)+'"'+(locked?' disabled':'')+'>'+
    '<span class="ct">'+esc(c.cat)+'</span><span class="cn">'+esc(c.n)+'</span>'+(c.c>1?'<span class="cnt">×'+av[c.id]+'</span>':'')+'</button>'});
- if(amOff&&G.down===4){const dist=100-G.yl,rate=fgRate(dist);
-  cards+='<button class="card k" data-act="sel" data-id="PUNT" aria-pressed="'+(app.sel==='PUNT')+'"'+(locked?' disabled':'')+'><span class="ct">4TH DOWN</span><span class="cn">Punt</span></button>';
-  cards+='<button class="card k" data-act="sel" data-id="FG" aria-pressed="'+(app.sel==='FG')+'"'+(locked||rate===0?' disabled':'')+'><span class="ct">4TH DOWN</span><span class="cn">Field Goal</span><span class="cnt">'+(rate*100)+'%</span></button>'}
+ let fourth='';
+ if(amOff&&G.down===4){const dist=100-G.yl,pct=fgPct(dist),pos=G.yl+40,isCard=!!app.sel&&app.sel!=='PUNT'&&app.sel!=='FG';
+  const ch=(id,act,t,sub,dis)=>'<button class="choice" data-act="'+act+'"'+(id?' data-id="'+id+'"':'')+' aria-pressed="'+(id?app.sel===id:isCard)+'"'+(dis||locked?' disabled':'')+'><b>'+t+'</b><span>'+sub+'</span></button>';
+  fourth='<div class="fourth"><div class="ft">4TH DOWN — どうする？</div><div class="choices">'+
+   ch(null,'go4','Go for it','攻撃カードを出して'+(G.yl+G.togo>=100?'Touchdown':'あと'+G.togo+'yd')+'を狙う')+
+   ch('PUNT','sel','Punt','40yd蹴る。相手は'+ballOn(pos>=100?20:100-pos)+'から')+
+   ch('FG','sel','Field Goal',pct?'成功率 '+pct+'%（'+(dist+18)+'ydのFG）':'ゴールまで'+dist+'yd。届かない',!pct)+
+   '</div></div><div class="small" style="font-weight:700">Go for it の場合は、攻撃カードを選ぶ</div>'}
  let det='';const s=app.sel;
  if(locked){det='<div class="detail"><div class="wait">「'+esc(callName(ON.pick.card))+'」をコールしました。'+(oppCommitted()?'結果を処理しています…':'相手の選択を待っています…')+'</div></div>'}
  else if(s==='PUNT'){const pos=G.yl+40;det='<div class="detail"><div class="dn">Punt</div><div>40yd先へ蹴ります。相手は'+ballOn(pos>=100?20:100-pos)+'から攻撃します。</div>'+confirmHTML()+'</div>'}
- else if(s==='FG'){const dist=100-G.yl;det='<div class="detail"><div class="dn">Field Goal</div><div>ゴールまで'+dist+'yd。成功率'+(fgRate(dist)*100)+'%。'+(dist<=20?'自動成功です。':dist<=30?'補正カードが★以外なら成功。':'補正カードが+1以上なら成功。')+'失敗するとその地点から相手の攻撃。</div>'+confirmHTML()+'</div>'}
+ else if(s==='FG'){const dist=100-G.yl;det='<div class="detail"><div class="dn">Field Goal</div><div>ゴールまで'+dist+'yd（'+(dist+18)+'ydのFG）。成功率'+fgPct(dist)+'%。成功で3点。失敗するとその地点から相手の攻撃。</div>'+confirmHTML()+'</div>'}
  else if(s&&av[s]>0){const c=amOff?cardO(s):cardD(s);
   let gain='';if(amOff){gain='<div class="gain">'+c.y.map((y,i)=>'<div><b class="sym '+symCls(i,true)+'">'+SYM[i]+'</b><span>'+(y===null?'不成功':y==='inc'?'Inc.':y+'yd')+'</span></div>').join('')+'</div>'}
   let mx='';opp.forEach(oc=>{const p=amOff?preview(s,oc.id,G.streak):preview(oc.id,s,G.streak);const out=oav[oc.id]<=0;
@@ -452,7 +478,7 @@ function handHTML(G){
  else det='<div class="detail"><div class="muted">カードを選ぶと、相手の残りカードに対する結果が表示されます。</div></div>';
  const wait=app.mode==='online'&&!locked?'<span class="muted small">'+(oppCommitted()?'相手は選択済みです':'相手は選択中です')+'</span>':'';
  return'<section class="panel"><div class="row" style="justify-content:space-between"><div class="role '+(amOff?'o':'d')+'">'+(amOff?'OFFENSE　あなたの攻撃':'DEFENSE　あなたの守備')+'</div>'+wait+'</div>'+
-  '<div class="hand">'+cards+'</div>'+det+'</section>'}
+  fourth+'<div class="hand">'+cards+'</div>'+det+'</section>'}
 function callName(id){return id==='PUNT'?'Punt':id==='FG'?'Field Goal':(OI[id]!==undefined?cardO(id).n:cardD(id).n)}
 function confirmHTML(){return'<div class="confirm"><button class="btn primary big" data-act="call">このカードでコール</button><button class="btn" data-act="unsel">選び直す</button></div>'}
 
@@ -487,11 +513,11 @@ function rulesHTML(){
  '<li>ラン傾向（RUNが2回連続）：Play Actionが1段階有利。RUNはRun CommitとGoal Lineに対して1段階不利。</li>'+
  '<li>パス傾向（RUN以外が2回連続）：Drawが1段階有利。RUN以外はCover 3、Cover 2、Preventに対して1段階不利。</li>'+
  '<li>使ったカードはそのドライブ中は使えません。Power Run、Outside Run、Short Pass、Run Commit、Balanced、Blitzは2枚あります。</li>'+
- '<li>4th Down：Puntは40yd先へ。Field Goalはゴールまで20yd以内は自動成功、21〜30ydは75%、31〜40ydは50%。</li>'+
+ '<li>4th Down：Puntは40yd先へ。Field Goalの成功率は、ゴールまで20yd以内100%、21〜25yd 90%、26〜30yd 80%、31〜36yd 70%、37〜40yd 40%。41yd以上は蹴れません。</li>'+
  '<li>同点なら1ドライブずつ延長します（最大3回）。</li></ul>'+
  '<h3>相性表</h3><div class="tw">'+t+'</div><h3>攻撃カードのヤード</h3><div class="tw">'+y+'</div></div>'}
 
-function firstSide(){const v=($('#first')||{}).value||'o';return v==='o'?0:v==='d'?1:(rand32()&1)}
+function firstSide(){const v=CFG.first;return v==='o'?0:v==='d'?1:(rand32()&1)}
 /* ---------- CPU mode ---------- */
 function startCpu(G){app.mode='cpu';app.me=0;app.G=G;app.sel=null;app.screen='game';render()}
 function cpuCall(){const G=app.G,amOff=G.off===0,ai=aiChoose(G,1,Math.random());
@@ -503,13 +529,15 @@ const oppCommitted=()=>false,leaveRoom=()=>{},initOnline=()=>{};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b||b.disabled)return;const act=b.dataset.act;
  if(act==='rules'){const m=$('#modal');m.className='modal';m.innerHTML=rulesHTML();m.hidden=false}
  else if(act==='close'){$('#modal').hidden=true}
- else if(act==='cpu'){startCpu(newGame(+($('#drives').value||3),firstSide()))}
+ else if(act==='cpu'){startCpu(newGame(+CFG.drives,firstSide()))}
  else if(act==='cpu-resume'){const s=LS.get('pc_cpu');if(s&&s.G)startCpu(s.G)}
  
  
  else if(act==='lobby'){if(app.mode==='online')leaveRoom();app.screen='lobby';app.mode=null;render()}
  else if(act==='sel'){app.sel=b.dataset.id;render();const d=document.querySelector('.detail');if(d&&d.scrollIntoView)d.scrollIntoView({block:'nearest',behavior:'smooth'})}
  else if(act==='unsel'){app.sel=null;render()}
+ else if(act==='cfg'){CFG[b.dataset.k]=b.dataset.v;LS.set('pc_cfg',CFG);render()}
+ else if(act==='go4'){if(app.sel==='PUNT'||app.sel==='FG')app.sel=null;render();const h=document.querySelector('.hand');if(h&&h.scrollIntoView)h.scrollIntoView({block:'nearest',behavior:'smooth'})}
  else if(act==='call'){if(!app.sel)return;cpuCall()}
  else if(act==='again'){if(app.mode==='cpu')startCpu(newGame(app.G.total/2-app.G.ot,app.G.first||0))}});
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')e.target.hidden=true});
