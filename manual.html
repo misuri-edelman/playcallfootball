@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PLAYCALL Football 取扱説明書｜攻撃と守備が1枚ずつ、同時に出す</title>
+<meta name="description" content="PLAYCALL Football の取扱説明書。攻撃と守備が1枚ずつ同時にカードを出す、読み合いのアメフトカードゲーム。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Graduate&family=Saira+Condensed:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=Permanent+Marker&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="manual-manual.css">
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- ============================ 固定ナビ ============================ -->
+<header class="topbar">
+  <div class="topbar-in">
+    <img class="tb-logo" src="assets/playcall-logo.png" alt="" />
+    <div class="tb-title">PLAYCALL&nbsp;FOOTBALL</div>
+    <div class="tb-now"><span>SECTION</span><b id="tb-now">00 / COVER</b></div>
+    <a class="tb-toc" href="#toc">目次</a>
+  </div>
+</header>
+
+<main class="book">
+
+  <!-- ============================ 1. 表紙 ============================ -->
+  <section class="hero" id="s-cover" data-screen-label="01 表紙" data-cover>
+    <div class="hero-mark">
+      <img src="assets/playcall-logo.png" alt="PLAYCALL ロゴ" />
+      <div class="hm-txt">
+        <b>PLAYBOOK EDITION</b>
+        <span>OFFICIAL MANUAL &nbsp;/&nbsp; PROTOTYPE v0.1</span>
+      </div>
+    </div>
+    <div class="hero-badge">NO INSTALL &nbsp;·&nbsp; PLAY IN BROWSER</div>
+
+    <div class="hero-in">
+      <div>
+        <div class="hero-title">
+          <span class="kicker">The Read-and-React Football Card Game</span>
+          <h1><span class="l1">PLAYCALL</span><span class="l2">FOOTBALL</span></h1>
+          <p class="hero-jp">攻撃と守備が、1枚ずつ同時に出す。</p>
+          <p class="hero-lead">
+            プレイコールは、相手の残りカードを読むゲームです。カードを1枚選べば、
+            相手の手持ちごとの結果がすべて見える。だが選べるのは、たった1枚。
+            使ったカードはそのドライブでは二度と戻らない——読み合いの材料は、常に減っていきます。
+          </p>
+          <div class="hero-stats">
+            <div class="st"><b>5×5</b><span>相性表</span></div>
+            <div class="st"><b>1</b><span>DRIVE 単位</span></div>
+            <div class="st"><b>2</b><span>PLAYER / CPU</span></div>
+            <div class="st"><b>0</b><span>INSTALL</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="frame">
+          <img src="assets/playcall-cover.png" alt="1980年代風のプレイブック表紙。方眼紙に描かれたフィールド図とX・Oの陣形" />
+        </div>
+        <div class="cap">— 4th &amp; 2, from the 38. Call it.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 2. 目次 ============================ -->
+  <section class="toc" id="toc" data-screen-label="02 目次" data-sec="CONTENTS">
+    <h2>目次</h2>
+    <p class="toc-sub">全11章。気になる章から読み進めてください。各章はクリックで移動できます。</p>
+    <nav class="toc-grid" id="toc-grid"></nav>
+  </section>
+
+  <!-- ============================ 3. これは何か ============================ -->
+  <section class="leaf green-edge" id="s-01" data-screen-label="03 これは何か" data-sec="CONCEPT" data-num="01" data-en="What This Is">
+    <div class="lh">
+      <div class="lh-num"><b>01</b><i>What This Is</i></div>
+      <h2>これは<span class="hl">読み合い</span>のゲームです</h2>
+      <p class="lh-sub">Concept / Simultaneous Card Play</p>
+    </div>
+
+    <p class="lead">
+      プレイコールは、アメフトの1プレーを「1枚のカード」に畳み込んだ2人用のカードゲームです。
+      あなたはオフェンスとディフェンスのどちらも操作し、CPUと1試合を通して対戦します。
+      1プレーごとに、両者は同時にカードを1枚だけ伏せて出します。出てから後悔しても、遅い。
+    </p>
+
+    <div class="two-col">
+      <div>
+        <h3>同時に出す、という意味</h3>
+        <p>
+          交互に選ぶゲームなら、後手は相手を見てから決められます。本作はそれを許しません。
+          カードを選ぶ段階で、こちらは「相手の残りカードに対する結果」だけを見せられます。
+          つまり<span style="font-weight:700">相手の選択そのものは、最後まで見えない</span>。
+          情報は十分にあるのに、確信は持てない——それがこのゲームの手触りです。
+        </p>
+        <h3>減っていく選択肢</h3>
+        <p>
+          カードは1ドライブを通して有限です。使えば消え、そのドライブでは戻りません。
+          だから序盤の1枚が終盤の手札を決めます。何を今使い、何を残すか。
+          カードの強さより、<span style="font-weight:700">切る順番</span>が勝敗を分けます。
+        </p>
+      </div>
+      <div>
+        <div class="side-note">
+          <b>まず覚える3つ</b>
+          <ol style="margin:0;padding-left:20px">
+            <li>両者は同時に1枚出す（相手の選択は見えない）</li>
+            <li>カードを選ぶと、相手の残りごとの結果が見える</li>
+            <li>使ったカードは、そのドライブ中は使えない</li>
+          </ol>
+        </div>
+        <p class="note-hand" style="margin-top:18px">
+          「見えている」と「分かっている」は違う。
+        </p>
+        <div class="photo-wide" style="margin-top:22px">
+          <img src="assets/football/huddle.jpg" alt="ハドルを組む選手たち" />
+        </div>
+        <p style="font-size:12px;color:var(--ink-3);margin-top:7px">
+          ハドル。コールの直前、11人が1つになる。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 4. 試合の準備 ============================ -->
+  <section class="leaf" id="s-02" data-screen-label="04 試合の準備" data-sec="SETUP" data-num="02" data-en="Match Setup">
+    <div class="lh">
+      <div class="lh-num"><b>02</b><i>Match Setup</i></div>
+      <h2>試合の準備</h2>
+      <p class="lh-sub">Two Choices Before Kickoff</p>
+    </div>
+    <p class="lead">
+      開始前に決めることは2つだけ。試合の長さと、最初のドライブの向きです。
+      どちらも試合の性格を変えるので、迷ったら標準のままで構いません。
+    </p>
+
+    <h3>① 試合の長さ</h3>
+    <p>
+      1試合に含まれるドライブ数を選びます。短ければ1枚の重みが増し、長ければ手札の枯渇と回復のリズムが効いてきます。
+    </p>
+    <div class="drive-strip" id="len-strip"></div>
+
+    <h3>② 最初のドライブ</h3>
+    <p>
+      最初に攻撃するのか、守備から入るのか、あるいはコイントスで決めるか。
+      攻撃から入ればカードを先に消費し、守備から入れば相手の出方を見てから手札を組めます。
+    </p>
+
+    <figure class="dia">
+      <div id="flow-diagram"></div>
+      <figcaption>図1　開始設定から最初のプレーまでの流れ。ここまでで入力する情報は2項目だけ。</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================ 5. ドライブとダウン ============================ -->
+  <section class="leaf gold-edge" id="s-03" data-screen-label="05 ドライブとダウン" data-sec="DRIVE &amp; DOWN" data-num="03" data-en="Drive &amp; Down">
+    <div class="lh">
+      <div class="lh-num"><b>03</b><i>Drive &amp; Down</i></div>
+      <h2>ドライブとダウン</h2>
+      <p class="lh-sub">How the Field Moves</p>
+    </div>
+    <p class="lead">
+      プレーを重ねて、フィールドを前へ進めます。ダウンを使い切る前に10ヤードを稼げれば、
+      ダウンは1stに戻る。稼げなければ、攻撃権は相手へ渡ります。この一連の流れが「ドライブ」です。
+    </p>
+
+    <figure class="dia">
+      <div id="field-diagram"></div>
+      <figcaption>図2　フィールド全体。スクリメージライン、ファーストダウン更新線、そして両者の陣形。Xは守備、Oは攻撃を表す。</figcaption>
+    </figure>
+
+    <h3>ダウンは「残り回数」である</h3>
+    <p>
+      一般的なアメフトでは4回のダウンが与えられます。本作もこの原則に沿って進行し、
+      10ヤードを更新できれば再び1stから始まります。下の図は、4回の攻撃で更新に成功する典型例です。
+    </p>
+
+    <figure class="dia">
+      <div id="down-diagram"></div>
+      <figcaption>図3　1st＆10からの4プレー。3rd＆8の場面で、ようやく更新線を越える。</figcaption>
+    </figure>
+
+    <div class="side-note">
+      <b>ポイント</b>
+      カードの再使用可否がリセットされるのは、このドライブ単位です。
+      「あと何プレー残っているか」を意識すると、カードを切る順番の判断が変わります。
+    </div>
+  </section>
+
+  <!-- ============================ 6. カードカタログ ============================ -->
+  <section class="leaf" id="s-04" data-screen-label="06 カードカタログ" data-sec="CARD CATALOG" data-num="04" data-en="Card Catalog">
+    <div class="lh">
+      <div class="lh-num"><b>04</b><i>Card Catalog</i></div>
+      <h2>カードカタログ</h2>
+      <p class="lh-sub">Offense 5 / Defense 5</p>
+    </div>
+    <p class="lead">
+      オフェンス5種、ディフェンス5種。いずれも1ドライブ内で使える枚数が決まっています。
+      カードにカーソルを合わせると拡大します。
+    </p>
+
+    <h3>オフェンス・カード</h3>
+    <div class="pc-grid" id="cards-off"></div>
+
+    <h3>ディフェンス・カード</h3>
+    <div class="pc-grid" id="cards-def"></div>
+
+    <div class="side-note" style="margin-top:26px">
+      <b>作例について</b>
+      README にカード名・相性の記載がないため、ここに並ぶカードと数値は
+      「アメフトの一般的なプレー」を想定した作例です。実装のカード構成に合わせて差し替えられるよう、
+      データは1か所にまとめてあります。
+    </div>
+  </section>
+
+  <!-- ============================ 7. 判定 ============================ -->
+  <section class="leaf green-edge" id="s-05" data-screen-label="07 判定" data-sec="RESOLUTION" data-num="05" data-en="Resolution">
+    <div class="lh">
+      <div class="lh-num"><b>05</b><i>Resolution</i></div>
+      <h2>判定とコール</h2>
+      <p class="lh-sub">Preview, Then Commit</p>
+    </div>
+    <p class="lead">
+      カードを選んだ時点で確定はしません。まず、相手の残りカードごとに何ヤード得られるかが表示されます。
+      その結果表を見比べ、納得してから「このカードでコール」で確定します。
+    </p>
+
+    <figure class="dia">
+      <div id="resolve-diagram"></div>
+      <figcaption>図4　選ぶ → 見比べる → コールする。3ステップで1プレーが決まる。</figcaption>
+    </figure>
+
+    <div class="two-col">
+      <div>
+        <h3>結果表の読み方</h3>
+        <p>
+          結果表は「相手の残りカード」×「こちらの獲得ヤード」です。ここから読み取るべきは、
+          平均点ではなく<span style="font-weight:700">ばらつきの形</span>。どのカードでも安定して稼げるなら、
+          その一枚は搾取されにくい安全な手です。
+        </p>
+      </div>
+      <div>
+        <div class="side-note">
+          <b>ミスの少ない進め方</b>
+          迷ったときは、結果表のいちばん悪い値が「損失にならない」カードを選ぶと、ドライブが壊れません。
+          逆転が要る場面では、いちばん良い値の大きさで選びます。
+        </div>
+      </div>
+    </div>
+    <div class="photo-band">
+      <figure><img src="assets/football/qb-pass.jpg" alt="パスを投げるクォーターバック" /><figcaption>パスを放つクォーターバック。放球までが勝負。</figcaption></figure>
+      <figure><img src="assets/football/scrimmage.jpg" alt="スクリメージラインの攻防" /><figcaption>スクリメージライン。両者の読み合いが交差する点。</figcaption></figure>
+      <figure><img src="assets/football/ball-on-grass.jpg" alt="芝に置かれたフットボール" /><figcaption>芝に置かれたボール。すべてはここから始まる。</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- ============================ 8. 相性表 ============================ -->
+  <section class="leaf" id="s-06" data-screen-label="08 相性表" data-sec="MATRIX" data-num="06" data-en="Compatibility Matrix">
+    <div class="lh">
+      <div class="lh-num"><b>06</b><i>Matrix</i></div>
+      <h2>相性表</h2>
+      <p class="lh-sub">5 × 5 Yardage Grid</p>
+    </div>
+    <p class="lead">
+      オフェンス5種 × ディフェンス5種、全25通りの結果をまとめた表です。
+      数値は獲得ヤード。マイナスは損失を意味します。表の色は優劣の目印で、実際の判断材料は数値のほうです。
+    </p>
+
+    <div class="mx-wrap">
+      <table class="mx" id="mx-table"></table>
+    </div>
+    <div class="mx-legend">
+      <span><i style="background:rgba(31,93,58,.35)"></i>有利（▲）</span>
+      <span><i style="background:rgba(208,160,44,.4)"></i>五分（＝）</span>
+      <span><i style="background:rgba(174,58,44,.32)"></i>不利（▼）</span>
+      <span style="color:var(--ink-3)">単位：ヤード</span>
+    </div>
+
+    <div class="side-note" style="margin-top:22px">
+      <b>作例について</b>
+      この25マスも、上記カードと同じく作例です。ゲーム内の「ルールと相性表」の内容を
+      そのまま反映させたい場合は、この表の数値を差し替えてください。
+    </div>
+  </section>
+
+  <!-- ============================ 9. 読み合いの図 ============================ -->
+  <section class="leaf dark" id="s-07" data-screen-label="09 読み合いの図" data-sec="THE READ" data-num="07" data-en="The Read">
+    <div class="lh">
+      <div class="lh-num"><b>07</b><i>The Read</i></div>
+      <h2>読み合いの図</h2>
+      <p class="lh-sub">What the Preview Screen Tells You</p>
+    </div>
+    <p class="lead">
+      これが、カードを選んだ直後に見える画面の構造です。左が自分の手札、右が相手の残りカードごとの結果。
+      相手がすでに使い切ったカードは、結果表から消えていきます——消えた行こそが、いちばん重要な情報です。
+    </p>
+
+    <div class="read-board">
+      <div>
+        <h3>自分の手札（このドライブの残り）</h3>
+        <div class="hand" id="read-hand"></div>
+        <p class="note-hand" style="margin-top:18px">
+          GO ROUTE はもう切った。残りは3枚。
+        </p>
+      </div>
+      <div>
+        <h3>相手の残りカードごとの結果</h3>
+        <div class="read-list" id="read-list"></div>
+      </div>
+    </div>
+
+    <figure class="dia" style="margin-top:34px">
+      <div id="read-diagram"></div>
+      <figcaption>図5　カードが減るにつれて、相手の選択肢の形が変わる。残り枚数の偏りが、そのまま読みになる。</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================ 10. CPUの思考 ============================ -->
+  <section class="leaf" id="s-08" data-screen-label="10 CPUの思考" data-sec="CPU LOGIC" data-num="08" data-en="CPU Logic">
+    <div class="lh">
+      <div class="lh-num"><b>08</b><i>CPU Logic</i></div>
+      <h2>CPUは、こちらの選択を見ていない</h2>
+      <p class="lh-sub">Mixed Strategy</p>
+    </div>
+    <p class="lead">
+      CPUは局面ごとに「混合戦略」でカードを選びます。複数の候補を確率で混ぜて出す方式で、
+      こちらの手札や直前の選択は参照しません。つまり、癖を読まれているわけではないが、
+      偏った出し方は統計的に損をする、ということです。
+    </p>
+
+    <figure class="dia">
+      <div id="cpu-diagram"></div>
+      <figcaption>図6　局面A〜CにおけるCPUの出方の作例。特定のカードに寄らず、常に複数の候補へ分散している。</figcaption>
+    </figure>
+
+    <div class="two-col">
+      <div>
+        <h3>混合戦略であることの意味</h3>
+        <p>
+          完全にランダムではなく、局面に応じて重みが変わります。たとえば大きく前進が必要な場面では、
+          高回収のカードの比率が上がります。だから「この局面なら来る」という推測は、統計的には一定程度働きます。
+        </p>
+      </div>
+      <div>
+        <div class="side-note">
+          <b>対策</b>
+          相手の出方に規則性があるなら、そこを突く。こちらも同じカードに偏らず、
+          期待値の高い手を分散させて出すのが基本です。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ 11. 戦術Tips ============================ -->
+  <section class="leaf gold-edge" id="s-09" data-screen-label="11 戦術Tips" data-sec="TACTICS" data-num="09" data-en="Tactics">
+    <div class="lh">
+      <div class="lh-num"><b>09</b><i>Tactics</i></div>
+      <h2>戦術Tips</h2>
+      <p class="lh-sub">Six Habits of a Better Caller</p>
+    </div>
+    <p class="lead">
+      ルールを覚えたら、あとは切り方の問題です。勝率に効いてくる習慣を6つ挙げます。
+    </p>
+    <div class="tip-grid" id="tips"></div>
+  </section>
+
+  <!-- ============================ 12. 用語集 ============================ -->
+  <section class="leaf" id="s-10" data-screen-label="12 用語集" data-sec="GLOSSARY" data-num="10" data-en="Glossary">
+    <div class="lh">
+      <div class="lh-num"><b>10</b><i>Glossary</i></div>
+      <h2>用語集</h2>
+      <p class="lh-sub">Terms Used in This Manual</p>
+    </div>
+    <p class="lead">
+      本マニュアルとゲーム内で使う用語のうち、迷いやすいものをまとめました。
+    </p>
+    <dl class="gl" id="glossary"></dl>
+  </section>
+
+  <!-- ============================ 13. 操作・セーブ・Q&A ============================ -->
+  <section class="leaf green-edge" id="s-11" data-screen-label="13 操作とセーブ" data-sec="OPERATION" data-num="11" data-en="Operation &amp; Save">
+    <div class="lh">
+      <div class="lh-num"><b>11</b><i>Operation</i></div>
+      <h2>操作・保存・よくある質問</h2>
+      <p class="lh-sub">Controls, Save, Q&amp;A</p>
+    </div>
+
+    <h3>操作方法</h3>
+    <ol class="rule-list">
+      <li><b>カードを1枚選ぶ</b>手札からカードをクリックまたはタップ。この時点では確定しません。</li>
+      <li><b>結果を確認する</b>相手の残りカードごとの獲得ヤードが一覧で表示されます。</li>
+      <li><b>「このカードでコール」を押す</b>プレーが確定し、両者のカードが同時に開きます。</li>
+      <li><b>次のドライブへ</b>攻撃権が移り、使用済みカードの状態がリセットされます。</li>
+    </ol>
+
+    <h3>保存と再開</h3>
+    <p>
+      試合の途中経過はブラウザ内に自動で保存されます。ページを閉じてしまっても、
+      「続きから」で再開できます。保存先はブラウザごとなので、別の端末には引き継がれません。
+      保存データを消したい場合は、ブラウザのサイトデータ削除で該当する保存領域を消してください。
+    </p>
+
+    <h3>よくある質問</h3>
+    <div class="faq" id="faq"></div>
+
+    <figure class="dia" style="margin-top:30px">
+      <div id="save-diagram"></div>
+      <figcaption>図7　保存の仕組み。通信もアカウントも不要で、進行状況は端末のブラウザ内に閉じている。</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================ 末尾：サインオフ ============================ -->
+  <section class="sign-off" id="s-signoff" data-screen-label="14 サインオフ" data-sec="SIGN-OFF" data-num="12">
+    <div class="so-rule"><span></span></div>
+    <div class="so-body">
+      <img class="so-logo" src="assets/playcall-logo.png" alt="" />
+      <div class="so-txt">
+        <b>PLAYCALL FOOTBALL</b>
+        <span>取扱説明書 &nbsp;/&nbsp; Prototype v0.1 &nbsp;—&nbsp; Playbook Edition</span>
+      </div>
+      <div class="so-credit">
+        <span class="so-c">©</span><b>misuri_edelman</b>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="manual-data.js"></script>
+<script src="manual-app.js"></script>
+</body>
+</html>
